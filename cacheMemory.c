@@ -2,112 +2,113 @@
 #include <stdlib.h>
 #include <time.h>
 
+typedef struct {
+    unsigned linhas;
+    unsigned colunas;
+    double **matriz;
+} mat;
 
-double **aloca(int linhas, int colunas, double **matriz){
-    matriz = malloc(linhas * sizeof(double *));
-    for (int i = 0; i < linhas; i++)
-        matriz[i] = malloc(colunas * sizeof(double));
-    return matriz;
-}
-
-
-double** popula(int linhas, int c, double **matriz)
+mat aloca(mat matriz)
 {
-    for (int i = 0; i < linhas; i++)
-        for (int j = 0; j < c; j++)
-            matriz[i][j] = rand() % 101;
+    matriz.matriz = malloc(matriz.linhas * sizeof(double *));
+    for (int i = 0; i < matriz.linhas; i++)
+        matriz.matriz[i] = malloc(matriz.colunas * sizeof(double));
     return matriz;
 }
 
+mat popula(mat matriz)
+{
+    for (int i = 0; i < matriz.linhas; i++)
+        for (int j = 0; j < matriz.colunas; j++)
+            matriz.matriz[i][j] = rand() % 101;
+    return matriz;
+}
 
-double** multClassica(int linhas1, int colunas1, int colunas2, double **MAT_1, double **MAT_2, double **MAT_MULT) {
-    
-    
-    for (int i = 0; i < linhas1; i++)
-        for (int j = 0; j < colunas2; j++)
+mat multClassica(mat MAT_1, mat MAT_2, mat MAT_MULT)
+{
+    for (int i = 0; i < MAT_1.linhas; i++)
+        for (int j = 0; j < MAT_2.colunas; j++)
         {
             double sum = 0;
-            for (int k = 0; k < colunas1; k++)
-                sum = sum + MAT_1[i][k] * MAT_2[k][j];
-            MAT_MULT[i][j] = sum;
+            for (int k = 0; k < MAT_1.colunas; k++)
+                sum = sum + MAT_1.matriz[i][k] * MAT_2.matriz[k][j];
+            MAT_MULT.matriz[i][j] = sum;
         }
     return MAT_MULT;
 }
 
-
-double** multClassicaComTransposta(int linhas1, int colunas1, int linhas2, double **MAT_1, double **MAT_2, double **MAT_MULT) {
-    for (int i = 0; i < linhas1; i++)
-        for (int j = 0; j < linhas2; j++)
+mat multClassicaComTransposta(mat MAT_1, mat MAT_2, mat MAT_MULT)
+{
+    for (int i = 0; i < MAT_1.linhas; i++)
+        for (int j = 0; j < MAT_2.linhas; j++)
         {
             double sum = 0;
-            for (int k = 0; k < colunas1; k++)
-                sum = sum + MAT_1[j][k] * MAT_2[i][k];
-            MAT_MULT[j][i] = sum;
+            for (int k = 0; k < MAT_1.colunas; k++)
+                sum = sum + MAT_1.matriz[j][k] * MAT_2.matriz[i][k];
+            MAT_MULT.matriz[j][i] = sum;
         }
 
     return MAT_MULT;
 }
 
-
-double** transposta(int linhas,int colunas, double **matriz){
-    for(int i = 0; i< linhas ; i++)
-        for(int j = i + 1; j < colunas; j++){
-            double aux = matriz[i][j];
-            matriz[i][j] = matriz[j][i];
-            matriz[j][i] = aux;
+mat transposta(mat matriz)
+{
+    for (int i = 0; i < matriz.linhas; i++)
+        for (int j = i + 1; j < matriz.colunas; j++)
+        {
+            double aux = matriz.matriz[i][j];
+            matriz.matriz[i][j] = matriz.matriz[j][i];
+            matriz.matriz[j][i] = aux;
         }
     return matriz;
 }
-
 
 int main(int argc, char *argv[6])
 {
+    mat MAT_1, MAT_2, MAT_MULT;
 
-    int linhas1 = atoi(argv[1]);
-    int colunas1 = atoi(argv[2]);
-    int linhas2 = atoi(argv[3]);
-    int colunas2 = atoi(argv[4]);
-    char mode = argv[5];
+    MAT_1.linhas = atoi(argv[1]);
+    MAT_1.colunas = atoi(argv[2]);
+    MAT_2.linhas = atoi(argv[3]);
+    MAT_2.colunas = atoi(argv[4]);
+    char mode = *argv[5];
+
+    MAT_MULT.linhas = MAT_1.linhas;
+    MAT_MULT.colunas = MAT_2.colunas;
 
     float tempo = 0.0;
     clock_t inicio, fim;
 
-
     srand(time(NULL));
 
-    double **MAT_1, **MAT_2, **MAT_MULT;
+    MAT_1 = aloca(MAT_1);
+    MAT_2 = aloca(MAT_2);
+    MAT_MULT = aloca(MAT_MULT);
 
-    MAT_1     =  aloca(linhas1, colunas1, MAT_1);
-    MAT_2     =  aloca(linhas2, colunas2, MAT_2);
-    MAT_MULT  =  aloca(linhas1, colunas2, MAT_MULT);
+    MAT_1 = popula(MAT_1);
+    MAT_2 = popula(MAT_2);
 
+    if (mode == 'o')
+    {
+        inicio = clock();
+        MAT_MULT = multClassica(MAT_1, MAT_2, MAT_MULT);
+        fim = clock();
 
-
-    MAT_1 = popula(linhas1, colunas1, MAT_1);
-    MAT_2 = popula(linhas2, colunas2, MAT_2);
-
-    if(mode == 'o'){
-        
-    
-    inicio = clock();
-    MAT_MULT =  multClassica(linhas1, colunas1, colunas2, MAT_1, MAT_2, MAT_MULT);
-    fim = clock();
-
-    tempo = (float) (((fim - inicio ) + 0.0) / CLOCKS_PER_SEC);
-    }else if(mode == 't') {
-
-        MAT_2 = transposta(linhas2, colunas2, MAT_2);
-
+        tempo = (float)(((fim - inicio) + 0.0) / CLOCKS_PER_SEC);
+    }
+    else if (mode == 't')
+    {
+        MAT_2 = transposta(MAT_2);
 
         inicio = clock();
-        MAT_MULT =  multClassicaComTransposta(linhas1, colunas1, linhas2, MAT_1, MAT_2, MAT_MULT);
+        MAT_MULT = multClassicaComTransposta(MAT_1, MAT_2, MAT_MULT);
 
         fim = clock();
 
-        tempo = (float) (((fim - inicio ) + 0.0) / CLOCKS_PER_SEC);
-    } else {
-        printf("Entrada Invalida\n");
+        tempo = (float)(((fim - inicio) + 0.0) / CLOCKS_PER_SEC);
     }
+    else
+        printf("Entrada Invalida\n");
 
     return 0;
 }
