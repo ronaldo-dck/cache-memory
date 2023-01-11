@@ -20,7 +20,7 @@ mat popula(mat matriz)
 {
     for (int i = 0; i < matriz.linhas; i++)
         for (int j = 0; j < matriz.colunas; j++)
-            matriz.matriz[i][j] = rand() % 101;
+            matriz.matriz[i][j] = rand();
     return matriz;
 }
 
@@ -76,8 +76,9 @@ int main(int argc, char *argv[6])
     MAT_MULT.linhas = MAT_1.linhas;
     MAT_MULT.colunas = MAT_2.colunas;
 
-    float tempo = 0.0;
+    float tMult = 0.0, tTrans = 0.0;
     clock_t inicio, fim;
+    FILE *tempos;
 
     srand(time(NULL));
 
@@ -94,21 +95,27 @@ int main(int argc, char *argv[6])
         MAT_MULT = multClassica(MAT_1, MAT_2, MAT_MULT);
         fim = clock();
 
-        tempo = (float)(((fim - inicio) + 0.0) / CLOCKS_PER_SEC);
+        tMult = (float)(((fim - inicio) + 0.0) / CLOCKS_PER_SEC);
     }
     else if (mode == 't')
     {
+        inicio = clock();
         MAT_2 = transposta(MAT_2);
+        fim = clock();
+        tTrans = (float)(((fim - inicio) + 0.0) / CLOCKS_PER_SEC);
 
         inicio = clock();
         MAT_MULT = multClassicaComTransposta(MAT_1, MAT_2, MAT_MULT);
-
         fim = clock();
 
-        tempo = (float)(((fim - inicio) + 0.0) / CLOCKS_PER_SEC);
+        tMult = (float)(((fim - inicio) + 0.0) / CLOCKS_PER_SEC);
     }
     else
         printf("Entrada Invalida\n");
 
+
+    tempos = fopen("tempos.txt", "a");
+    fprintf(tempos, "%d, %c, %f, %f, %f\n", MAT_2.colunas, mode, tTrans, tMult, tTrans + tMult);
+    fclose(tempos);
     return 0;
 }
