@@ -11,11 +11,11 @@ int main()
     char chamada[100];
     char ordem[5];
     int status;
-    
-    for (int i = 200; i <= 2000; i += 200)
+
+    for (int i = 200; i <= 2000; i += 200){
         for (int j = 0; j < 20; j++)
         {
-            if (j < 10)
+            if (j >= 10)
                 mode = 'o';
 
             sprintf(ordem, "%d", i);
@@ -24,6 +24,8 @@ int main()
             system(chamada);
             wait(&status);
         }
+    mode = 't';
+    }
 
     return 0;
 }
