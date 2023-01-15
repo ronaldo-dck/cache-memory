@@ -117,8 +117,8 @@ int main(int argc, char *argv[6])
     else
         printf("Entrada Invalida\n");
 
-    tempos = fopen("tempos.txt", "a");
-    fprintf(tempos, "%d, %c, %f, %f, %f, %f\n", MAT_2.colunas, mode, tCria, tTrans, tMult, tTrans + tMult);
-    fclose(tempos);
+    // tempos = fopen("tempos.txt", "a");
+    // fprintf(tempos, "%d, %c, %f, %f, %f, %f\n", MAT_2.colunas, mode, tCria, tTrans, tMult, tTrans + tMult);
+    // fclose(tempos);
     return 0;
 }
