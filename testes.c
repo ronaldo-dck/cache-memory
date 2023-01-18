@@ -19,7 +19,7 @@ int main()
                 mode = 'o';
 
             sprintf(ordem, "%d", i);
-            sprintf(chamada, "./cacheMemory %s %s %s %s %c", ordem, ordem, ordem, ordem, mode);
+            sprintf(chamada, "./cacheMemoryWithArithmetic %s %s %s %s %c", ordem, ordem, ordem, ordem, mode);
 
             system(chamada);
             wait(&status);

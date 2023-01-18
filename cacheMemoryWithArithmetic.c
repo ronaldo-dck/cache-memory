@@ -18,17 +18,10 @@ mat aloca(mat matriz)
 mat popula(mat matriz)
 {
     for (int i = 0; i < (matriz.linhas*matriz.colunas); i++)
-            matriz.matriz[i] = rand()%101;
+            matriz.matriz[i] = rand();
     return matriz;
 }
 
-mat printMatriz(mat matriz){
-    for(int i = 0; i < matriz.linhas; i++){
-        for(int j =0; j <matriz.colunas; j++)
-            printf("%.f ", matriz.matriz[i*matriz.linhas+j]);
-        printf("\n");
-    }
-}
 
 mat multClassica(mat MAT_1, mat MAT_2, mat MAT_MULT)
 {
@@ -99,47 +92,35 @@ int main(int argc, char *argv[6])
     fim = clock();
     tCria = (float)(((fim - inicio) + 0.0) / CLOCKS_PER_SEC);
 
-    printMatriz(MAT_1);
-    printf("\n");
-    printMatriz(MAT_2);
-    printf("\n");
-    multClassica(MAT_1, MAT_2, MAT_MULT);
-    printMatriz(MAT_MULT);
-    transposta(MAT_2);
-    printMatriz(MAT_2);
-    printf("\n");
-    multClassicaComTransposta(MAT_1, MAT_2, MAT_MULT);
-    printMatriz(MAT_MULT);
-    
 
     
 
-    // if (mode == 'o')
-    // {
-    //     inicio = clock();
-    //     MAT_MULT = multClassica(MAT_1, MAT_2, MAT_MULT);
-    //     fim = clock();
+    if (mode == 'o')
+    {
+        inicio = clock();
+        MAT_MULT = multClassica(MAT_1, MAT_2, MAT_MULT);
+        fim = clock();
 
-    //     tMult = (float)(((fim - inicio) + 0.0) / CLOCKS_PER_SEC);
-    // }
-    // else if (mode == 't')
-    // {
-    //     inicio = clock();
-    //     MAT_2 = transposta(MAT_2);
-    //     fim = clock();
-    //     tTrans = (float)(((fim - inicio) + 0.0) / CLOCKS_PER_SEC);
+        tMult = (float)(((fim - inicio) + 0.0) / CLOCKS_PER_SEC);
+    }
+    else if (mode == 't')
+    {
+        inicio = clock();
+        MAT_2 = transposta(MAT_2);
+        fim = clock();
+        tTrans = (float)(((fim - inicio) + 0.0) / CLOCKS_PER_SEC);
 
-    //     inicio = clock();
-    //     MAT_MULT = multClassicaComTransposta(MAT_1, MAT_2, MAT_MULT);
-    //     fim = clock();
+        inicio = clock();
+        MAT_MULT = multClassicaComTransposta(MAT_1, MAT_2, MAT_MULT);
+        fim = clock();
 
-    //     tMult = (float)(((fim - inicio) + 0.0) / CLOCKS_PER_SEC);
-    // }
-    // else
-    //     printf("Entrada Invalida\n");
+        tMult = (float)(((fim - inicio) + 0.0) / CLOCKS_PER_SEC);
+    }
+    else
+        printf("Entrada Invalida\n");
 
-    // tempos = fopen("temposWithArithmetic.txt", "a");
-    // fprintf(tempos, "%d, %c, %f, %f, %f, %f\n", MAT_2.colunas, mode, tCria, tTrans, tMult, tTrans + tMult);
-    // fclose(tempos);
+    tempos = fopen("temposWithArithmetic.txt", "a");
+    fprintf(tempos, "%d, %c, %f, %f, %f, %f\n", MAT_2.colunas, mode, tCria, tTrans, tMult, tTrans + tMult);
+    fclose(tempos);
     return 0;
 }
